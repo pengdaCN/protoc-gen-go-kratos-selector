@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package google.api;
+
+import "google/protobuf/descriptor.proto";
+
+option go_package = "gitee.com/pengdacn/proto-gen-go-kratos-selector/group;group";
+
+extend google.protobuf.MethodOptions {
+  Group group = 1101;
+}
+
+message Group {
+  string name = 1;
+  int32 property = 2;
+
+  repeated UnrepeatedGroup additional = 3;
+}
+
+message UnrepeatedGroup {
+  string name = 1;
+  int32 property = 2;
+}
