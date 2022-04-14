@@ -1,0 +1,16 @@
+
+{{ $desc := . }}
+var (
+{{range $handleName, $_ := .Maps}}
+	{{ $desc.ServiceType -}}{{- $handleName -}}SelectedMethods = make(map[string]struct{})
+{{end}}
+)
+
+func init() {
+{{range $handleName, $methods := .Maps -}}
+    {{- range $_, $method := $methods}}
+    	{{ $desc.ServiceType -}}{{- $handleName -}}SelectedMethods[`{{- $method -}}`] = struct{}{}
+{{- end}}
+{{- end}}
+}
+

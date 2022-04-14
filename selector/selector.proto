@@ -13,12 +13,7 @@ extend google.protobuf.MethodOptions {
 message Group {
   string name = 1;
 
-  repeated UnrepeatedGroup additional = 2;
-}
-
-message UnrepeatedGroup {
-  string name = 1;
-  int32 property = 2;
+  repeated string additional = 2;
 }
 
 extend google.protobuf.ServiceOptions {
