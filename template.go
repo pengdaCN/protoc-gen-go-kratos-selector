@@ -98,23 +98,22 @@ type serviceDesc struct {
 	ServiceType string // Greeter
 	ServiceName string // helloworld.Greeter
 	Metadata    string // api/helloworld/helloworld.proto
-	Methods     []*methodDesc
-	MethodSets  map[string]*methodDesc
+	Handlers    []*handler
+	Tags        []*tag
+	TagSet      map[string]*tag
 }
 
-type methodDesc struct {
-	// method
-	Name    string
-	Num     int
-	Request string
-	Reply   string
-	// http_rule
-	Path         string
-	Method       string
-	HasVars      bool
-	HasBody      bool
-	Body         string
-	ResponseBody string
+type handler struct {
+	Name     string
+	Select   string
+	Property int32
+	Enabled  bool
+	Global   bool
+}
+
+type tag struct {
+	Name  string
+	Marks []string
 }
 
 func (s *serviceDesc) execute() string {

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"gitee.com/pengdacn/proto-gen-go-kratos-selector/group"
+	"gitee.com/pengdacn/proto-gen-go-kratos-selector/selector"
 	"os"
 	"regexp"
 	"strings"
@@ -47,8 +47,6 @@ func generateFileContent(gen *protogen.Plugin, file *protogen.File, g *protogen.
 	g.P("// This is a compile-time assertion to ensure that this generated file")
 	g.P("// is compatible with the kratos package it is being compiled against.")
 	g.P("var _ = new(", contextPackage.Ident("Context"), ")")
-	g.P("var _ = ", bindingPackage.Ident("EncodeURL"))
-	g.P("const _ = ", transportHTTPPackage.Ident("SupportPackageIsVersion1"))
 	g.P()
 
 	for _, service := range file.Services {
@@ -61,17 +59,26 @@ func genService(gen *protogen.Plugin, file *protogen.File, g *protogen.Generated
 		g.P("//")
 		g.P(deprecationComment)
 	}
+
+	handlers, ok := proto.GetExtension(service.Desc.Options(), selector.E_Handlers).(*selector.Handlers)
+	if !ok {
+		_, _ = fmt.Fprintf(os.Stderr, "\u001B[31mERROR\u001B[m: %s 服务%s没有定义Handle\n", file.Desc.Path(), service.Desc.FullName())
+		os.Exit(2)
+	}
+
 	// HTTP Server.
 	sd := &serviceDesc{
 		ServiceType: service.GoName,
 		ServiceName: string(service.Desc.FullName()),
 		Metadata:    file.Desc.Path(),
 	}
+
+	// 创建tag
 	for _, method := range service.Methods {
 		if method.Desc.IsStreamingClient() || method.Desc.IsStreamingServer() {
 			continue
 		}
-		rule, ok := proto.GetExtension(method.Desc.Options(), group.E_Group).(*group.Group)
+		rule, ok := proto.GetExtension(method.Desc.Options(), selector.E_Group).(*selector.Group)
 		if rule != nil && ok {
 			for _, bind := range rule.AdditionalBindings {
 				sd.Methods = append(sd.Methods, buildHTTPRule(g, method, bind))
