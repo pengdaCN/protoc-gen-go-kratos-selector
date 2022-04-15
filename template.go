@@ -23,6 +23,7 @@ type serviceDesc struct {
 	Tags        []*tag
 	TagSet      map[string]*tag
 	Maps        map[string][]string
+	Methods     map[string][]string
 }
 
 type handler struct {
@@ -64,7 +65,14 @@ func (s *serviceDesc) execute() string {
 		methodSet := make(map[string]struct{})
 		for _, t := range s.Tags {
 			if match(h.Select, t.Name) {
+			skip:
 				for m := range t.methodSet {
+					for _, tag := range s.Methods[m] {
+						if !match(h.Select, tag) {
+							continue skip
+						}
+					}
+
 					methodSet[m] = struct{}{}
 				}
 			}

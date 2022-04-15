@@ -14,8 +14,8 @@ func Test_match(t *testing.T) {
 	}{
 		{
 			args: args{
-				selector: "!no-jwt",
-				name:     "no-jwt",
+				selector: "!no-auth-baseInfo",
+				name:     "no-auth-baseInfo",
 			},
 			want: false,
 		},

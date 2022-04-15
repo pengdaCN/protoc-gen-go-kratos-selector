@@ -63,6 +63,7 @@ func genService(gen *protogen.Plugin, file *protogen.File, g *protogen.Generated
 		Metadata:    file.Desc.Path(),
 		TagSet:      make(map[string]*tag),
 		Maps:        make(map[string][]string),
+		Methods:     make(map[string][]string),
 	}
 
 	for _, h := range handlers.Handlers {
@@ -86,11 +87,18 @@ func genService(gen *protogen.Plugin, file *protogen.File, g *protogen.Generated
 
 			t.addMethod(method.GoName)
 
+			var tags []string
+
+			tags = append(tags, grp.Name)
 			for _, g := range grp.Additional {
 				t := sd.touchTag(g)
 
 				t.addMethod(method.GoName)
+
+				tags = append(tags, g)
 			}
+
+			sd.Methods[method.GoName] = tags
 		} else {
 			sd.touchTag("").addMethod(method.GoName)
 		}
