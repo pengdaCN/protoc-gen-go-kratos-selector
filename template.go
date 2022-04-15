@@ -87,11 +87,17 @@ func (s *serviceDesc) execute() string {
 func match(selector, name string) bool {
 	verbs := strings.Split(selector, "|")
 	for _, verb := range verbs {
-		if verb[:1] == "!" {
+		verb = strings.TrimSpace(verb)
+		switch {
+		case verb == "$any":
+			return true
+		case verb[:1] == "!":
 			if verb[1:] != name {
 				return true
+			} else {
+				return false
 			}
-		} else {
+		default:
 			if verb == name {
 				return true
 			}

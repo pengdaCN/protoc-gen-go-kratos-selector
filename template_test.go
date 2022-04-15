@@ -15,9 +15,17 @@ func Test_match(t *testing.T) {
 		{
 			args: args{
 				selector: "!no-jwt",
-				name:     "jwt",
+				name:     "no-jwt",
 			},
-			want: true,
+			want: false,
+		},
+		{
+			name: "no-jwt",
+			args: args{
+				selector: "!no-jwt|$any",
+				name:     "no-jwt",
+			},
+			want: false,
 		},
 	}
 	for _, tt := range tests {
