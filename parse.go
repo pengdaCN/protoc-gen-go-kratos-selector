@@ -53,7 +53,7 @@ func genService(gen *protogen.Plugin, file *protogen.File, g *protogen.Generated
 	}
 
 	handlers, ok := proto.GetExtension(service.Desc.Options(), selector.E_Handlers).(*selector.Handlers)
-	if !ok {
+	if handlers == nil || !ok {
 		return
 	}
 
@@ -84,15 +84,15 @@ func genService(gen *protogen.Plugin, file *protogen.File, g *protogen.Generated
 		if grp != nil && ok {
 			t := sd.touchTag(grp.Name)
 
-			t.addMethod(string(method.Desc.Name()))
+			t.addMethod(method.GoName)
 
 			for _, g := range grp.Additional {
 				t := sd.touchTag(g)
 
-				t.addMethod(string(method.Desc.Name()))
+				t.addMethod(method.GoName)
 			}
 		} else {
-			sd.touchTag("").addMethod(string(method.Desc.Name()))
+			sd.touchTag("").addMethod(method.GoName)
 		}
 	}
 
