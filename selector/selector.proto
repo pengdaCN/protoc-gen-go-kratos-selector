@@ -4,7 +4,7 @@ package selector;
 
 import "google/protobuf/descriptor.proto";
 
-option go_package = "gitee.com/pengdacn/proto-gen-go-kratos-selector/selector;selector";
+option go_package = "gitee.com/pengdacn/protoc-gen-go-kratos-selector/selector;selector";
 
 extend google.protobuf.MethodOptions {
   Group group = 1101;
