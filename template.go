@@ -3,6 +3,7 @@ package main
 import (
 	_ "embed"
 	"fmt"
+	"sort"
 	"strings"
 	"text/template"
 )
@@ -69,7 +70,9 @@ func (s *serviceDesc) execute() string {
 				for m := range t.methodSet {
 					for _, tag := range s.Methods[m] {
 						if !match(h.Select, tag) {
-							continue skip
+							if strings.HasPrefix(h.Select, "!") {
+								continue skip
+							}
 						}
 					}
 
@@ -81,6 +84,8 @@ func (s *serviceDesc) execute() string {
 		for m := range methodSet {
 			c = append(c, fmt.Sprintf("/%s/%s", s.ServiceName, m))
 		}
+
+		sort.Strings(c)
 
 		s.Maps[h.Name] = c
 	}
