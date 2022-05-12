@@ -8,28 +8,30 @@ import "selector/selector.proto";
 option go_package = "api/cart/service/v1;v1";
 
 service Cart {
-  option(selector.handlers) = {
-    handlers: [
+  option(selector.select) = {
+    use: "tests/protos/middleware.proto"
+
+    verbs: [
       {
-        name: "jwt"
+        id: "jwt"
         select: "!no-jwt"
       }
     ]
   };
 
   rpc GetCart (GetCartReq) returns (GetCartReply) {
-    option(selector.group) = {
+    option(selector.tag) = {
       name: "jwt"
     };
   }
   rpc DeleteCart (DeleteCartReq) returns (DeleteCartReply) {
-    option(selector.group) = {
+    option(selector.tag) = {
       name: "jwt"
     };
   }
 
   rpc AddItem (AddItemReq) returns (AddItemReply) {
-    option(selector.group) = {
+    option(selector.tag) = {
       name: "jwt"
     };
   }
@@ -53,9 +55,7 @@ message DeleteCartReq {
   int64 user_id = 1;
 }
 
-message DeleteCartReply {
-
-}
+message DeleteCartReply {}
 
 message AddItemReq {
   int64 user_id = 1;

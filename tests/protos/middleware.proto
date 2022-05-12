@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package cart.service.v1.middleware;
+option go_package = "api/cart/service/v1;v1";
+
+import "selector/selector.proto";
+
+option (selector.defined) = {
+  name: "test"
+  handlers: [
+    {
+      id: "jwt"
+    }
+  ]
+};

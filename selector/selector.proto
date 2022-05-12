@@ -7,27 +7,41 @@ import "google/protobuf/descriptor.proto";
 option go_package = "gitee.com/pengdacn/protoc-gen-go-kratos-selector/selector;selector";
 
 extend google.protobuf.MethodOptions {
-  Group group = 1101;
+  Tag tag = 1101;
 }
 
-message Group {
+extend google.protobuf.FileOptions {
+  Defined defined = 1101;
+}
+
+extend google.protobuf.ServiceOptions {
+  Selector select = 1102;
+}
+
+message Tag {
   string name = 1;
 
   repeated string additional = 2;
 }
 
-extend google.protobuf.ServiceOptions {
-  Handlers handlers = 1102;
+message Selector {
+  string use = 1;
+  repeated Verb verbs = 2;
 }
 
-message Handlers {
-  repeated Handler handlers = 1;
-}
-
-message Handler {
-  string name = 1;
+message Verb {
+  string id = 1;
   string select = 2;
+}
+
+message Defined {
+  string name = 1;
+  repeated Handle handlers = 2;
+}
+
+message Handle {
+  string id = 1;
+  string alias = 2;
   int32 property = 3;
-  bool enabled = 4;
-  bool global = 5;
+  bool disable = 4;
 }

@@ -1,16 +1,79 @@
+import (
+	context "context"
+	middleware "github.com/go-kratos/kratos/v2/middleware"
+	selector "github.com/go-kratos/kratos/v2/middleware/selector"
+)
 
 {{ $desc := . }}
+
+type standardSelector{{- title .Name }} struct {
+{{- range $_, $handle := .Handlers}}
+	id_{{- $handle.Name}} map[string]struct{}
+	middlewares_{{- $handle.Name}} []middleware.Middleware
+{{- end}}
+}
+
+type Selector{{- title .Name }} interface {
+	Build() middleware.Middleware
+{{- range $_, $handle := .Handlers}}
+	Add_{{- $handle.Name}}(mld middleware.Middleware)
+{{- end}}
+}
+
 var (
-{{range $handleName, $_ := .Maps}}
-	{{ $desc.ServiceType -}}{{- $handleName -}}SelectedMethods = make(map[string]struct{})
-{{end}}
+{{- range $_, $handle := .Handlers}}
+	Selector_{{- title $handle.Name }} = make(map[string]struct{})
+{{- end}}
+
+    _ Selector{{- title .Name -}} = (*standardSelector{{- title .Name -}})(nil)
 )
 
 func init() {
-{{range $handleName, $methods := .Maps -}}
-    {{- range $_, $method := $methods}}
-    	{{ $desc.ServiceType -}}{{- $handleName -}}SelectedMethods[`{{- $method -}}`] = struct{}{}
-{{- end}}
+{{- range $_, $handle := .Handlers -}}
+	{{- range $_, $method := $handle.FullMethodName}}
+	Selector_{{- title $handle.Name }}[`{{- $method -}}`] = struct{}{}
+	{{- end}}
+
 {{- end}}
 }
+
+func NewSelector{{- title .Name -}}() Selector{{- title .Name -}} {
+	return &standardSelector{{- title .Name -}}{
+	{{range $_, $handle := .Handlers -}}
+		id_{{- $handle.Name}}: Selector_{{- title $handle.Name }},
+	{{- end}}
+	}
+}
+
+func (s *standardSelector{{- title .Name -}}) Build() middleware.Middleware {
+	var selectors []middleware.Middleware
+
+	{{- range $_, $handle := .Handlers}}
+	selectors = append(
+		selectors,
+		selector.Server(
+			middleware.Chain(s.middlewares_{{- $handle.Name -}}...),
+		).
+			Match(s.match_{{- $handle.Name -}}()).
+			Build(),
+	)
+	{{- end}}
+
+	return middleware.Chain(selectors...)
+}
+
+{{- range $_, $handle := .Handlers}}
+func (s *standardSelector{{- title $desc.Name -}}) Add_{{- $handle.Name -}}(mld middleware.Middleware) {
+	s.middlewares_{{- $handle.Name}} = append(s.middlewares_{{- $handle.Name}}, mld)
+}
+
+func (s *standardSelector{{- title $desc.Name -}}) match_{{- $handle.Name -}}() selector.MatchFunc {
+    return func(ctx context.Context, operation string) bool {
+	    _, ok := Selector_{{- title $handle.Name -}}[operation]
+
+		return ok
+    }
+}
+
+{{- end}}
 

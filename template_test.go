@@ -1,38 +1,37 @@
 package main
 
-import "testing"
+import (
+	"bytes"
+	"testing"
+)
 
-func Test_match(t *testing.T) {
-	type args struct {
-		selector string
-		name     string
-	}
-	tests := []struct {
-		name string
-		args args
-		want bool
-	}{
-		{
-			args: args{
-				selector: "!no-auth-baseInfo",
-				name:     "no-auth-baseInfo",
+func TestExec(t *testing.T) {
+	var bs = bytes.NewBuffer(nil)
+
+	data := DrawingData{
+		Name: "test1",
+		//Middleware: kratosMiddleware,
+		//Selector:   kratosSelector,
+		Handlers: []struct {
+			Name           string
+			FullMethodName []string
+		}{
+			{
+				Name: "jwt",
+				FullMethodName: []string{
+					"/fdsa/",
+					"/.fdsa",
+				},
 			},
-			want: false,
-		},
-		{
-			name: "no-jwt",
-			args: args{
-				selector: "!no-jwt|$any",
-				name:     "no-jwt",
-			},
-			want: false,
 		},
 	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := match(tt.args.selector, tt.args.name); got != tt.want {
-				t.Errorf("match() = %v, want %v", got, tt.want)
-			}
-		})
+
+	err := tmpl.Execute(bs, &data)
+	if err != nil {
+		t.Fatal(err)
 	}
+
+	//t.Log(kratosSelector.Ident("Selector").String())
+
+	t.Log(bs.String())
 }
