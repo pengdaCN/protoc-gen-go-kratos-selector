@@ -34,6 +34,10 @@ func parse(file *protogen.File) ([]serviceDesc, error) {
 			return nil, err
 		}
 
+		if descs.selectInfo == nil {
+			continue
+		}
+
 		r = append(r, descs)
 	}
 
@@ -48,6 +52,10 @@ func parseService(srv *protogen.Service) (descSrv serviceDesc, err error) {
 	extension, ok := proto.GetExtension(srv.Desc.Options(), selector.E_Select).(*selector.Selector)
 	if extension == nil || !ok {
 		return
+	}
+
+	if extension.Use == "" {
+		return descSrv, fmt.Errorf("%s use is nil", srv.Desc.FullName())
 	}
 
 	useageIds := make(map[string]struct{})
@@ -90,7 +98,7 @@ func parseMethod(method *protogen.Method) (desc funcDesc, err error) {
 		desc.name: {},
 	}
 
-	desc.tags = append(desc.tags, desc.name)
+	desc.tags = append(desc.tags, extension.Name)
 	for _, name := range extension.Additional {
 		_, ok := tags[name]
 		if ok {

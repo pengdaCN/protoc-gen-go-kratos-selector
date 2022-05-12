@@ -21,6 +21,18 @@ func Test_fullMatch(t *testing.T) {
 			},
 			wantOk: false,
 		},
+		{
+			name: "x1",
+			args: args{
+				selector: "privilege|b",
+				tags: []string{
+					"privilege",
+					"a",
+				},
+			},
+
+			wantOk: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

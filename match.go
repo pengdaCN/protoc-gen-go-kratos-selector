@@ -6,6 +6,10 @@ func fullMatch(selector string, tags []string) (ok bool) {
 	verbs := strings.Split(selector, "|")
 	for _, verb := range verbs {
 		verb = strings.TrimSpace(verb)
+		if verb == "" {
+			continue
+		}
+
 		switch {
 		case verb == "$any":
 			return true

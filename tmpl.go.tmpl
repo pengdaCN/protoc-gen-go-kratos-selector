@@ -39,7 +39,7 @@ func init() {
 
 func NewSelector{{- title .Name -}}() Selector{{- title .Name -}} {
 	return &standardSelector{{- title .Name -}}{
-	{{range $_, $handle := .Handlers -}}
+	{{- range $_, $handle := .Handlers }}
 		id_{{- $handle.Name}}: Selector_{{- title $handle.Name }},
 	{{- end}}
 	}

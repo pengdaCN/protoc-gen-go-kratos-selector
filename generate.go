@@ -47,9 +47,9 @@ func generateSelector(gen *protogen.Plugin) error {
 
 	// 生成selector文件
 genFile:
-	for path, srvs := range usages {
+	for p, srvs := range usages {
 		for _, file := range gen.Files {
-			if file.Desc.Path() == path {
+			if file.Desc.Path() == p {
 				if err := generateSelectorFile(gen, file, srvs); err != nil {
 					return err
 				}
@@ -58,7 +58,7 @@ genFile:
 			}
 		}
 
-		return fmt.Errorf("not found import file: %s", path)
+		return fmt.Errorf("not found import file: %s", p)
 	}
 
 	return nil
@@ -158,9 +158,8 @@ func generateDrawingData(def *selector.Defined, srvs []*serviceDesc) (r DrawingD
 			newMatches := t[verb.Id]
 			if len(matches) != 0 {
 				newMatches = append(newMatches, matches...)
+				t[verb.Id] = newMatches
 			}
-
-			t[verb.Id] = newMatches
 		}
 	}
 
@@ -175,7 +174,7 @@ func generateDrawingData(def *selector.Defined, srvs []*serviceDesc) (r DrawingD
 
 		finalName := name
 		if c != 0 {
-			finalName = name + strconv.Itoa(c)
+			finalName = name + "_" + strconv.Itoa(c)
 		}
 
 		c++
