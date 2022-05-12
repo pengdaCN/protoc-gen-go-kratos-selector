@@ -15,7 +15,7 @@ var (
 func main() {
 	flag.Parse()
 	if *showVersion {
-		fmt.Printf("protoc-gen-go-http %v\n", release)
+		fmt.Printf("protoc-gen-go-kratos-selector %v\n", release)
 		return
 	}
 	protogen.Options{
