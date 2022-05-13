@@ -13,7 +13,7 @@ func CombineOperation(op string) string {
 	}
 
 	bs := []byte(op)
-	bs[idx+1] = strings.ToUpper(op[idx+1 : idx+2])[0]
+	bs[idx+1] = strings.ToLower(op[idx+1 : idx+2])[0]
 
 	return string(bs)
 }
