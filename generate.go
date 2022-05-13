@@ -161,6 +161,10 @@ func generateDrawingData(def *selector.Defined, srvs []*serviceDesc) (r DrawingD
 
 	nameCount := make(map[string]int)
 	for _, handle := range def.Handlers {
+		if handle.Disable {
+			continue
+		}
+
 		name := handle.Id
 		if handle.Alias != "" {
 			name = handle.Alias
