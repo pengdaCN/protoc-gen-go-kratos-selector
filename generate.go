@@ -147,7 +147,7 @@ func generateDrawingData(def *selector.Defined, srvs []*serviceDesc) (r DrawingD
 
 			for _, desc := range srv.funcs {
 				if fullMatch(verb.Select, desc.tags) {
-					matches = append(matches, path.Join("/", srv.protoFullName, desc.name))
+					matches = append(matches, path.Join("/", srv.protoFullName, desc.protoName))
 				}
 			}
 
