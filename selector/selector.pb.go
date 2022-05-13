@@ -26,7 +26,9 @@ type Tag struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name       string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// 标签名
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// 附加的标签
 	Additional []string `protobuf:"bytes,2,rep,name=additional,proto3" json:"additional,omitempty"`
 }
 
@@ -81,7 +83,9 @@ type Selector struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Use   string  `protobuf:"bytes,1,opt,name=use,proto3" json:"use,omitempty"`
+	// 使用的中间件定义路径
+	Use string `protobuf:"bytes,1,opt,name=use,proto3" json:"use,omitempty"`
+	// 定义如何选择这些方法
 	Verbs []*Verb `protobuf:"bytes,2,rep,name=verbs,proto3" json:"verbs,omitempty"`
 }
 
@@ -136,7 +140,9 @@ type Verb struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id     string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// 引用的handle id
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// 选择器
 	Select string `protobuf:"bytes,2,opt,name=select,proto3" json:"select,omitempty"`
 }
 
@@ -191,7 +197,9 @@ type Defined struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name     string    `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// 中间件名称
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// 中间件中定义的所有handle
 	Handlers []*Handle `protobuf:"bytes,2,rep,name=handlers,proto3" json:"handlers,omitempty"`
 }
 
@@ -246,10 +254,14 @@ type Handle struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id       string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Alias    string `protobuf:"bytes,2,opt,name=alias,proto3" json:"alias,omitempty"`
-	Property int32  `protobuf:"varint,3,opt,name=property,proto3" json:"property,omitempty"`
-	Disable  bool   `protobuf:"varint,4,opt,name=disable,proto3" json:"disable,omitempty"`
+	// id，不能重复
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// 别名
+	Alias string `protobuf:"bytes,2,opt,name=alias,proto3" json:"alias,omitempty"`
+	// 优先级
+	Property int32 `protobuf:"varint,3,opt,name=property,proto3" json:"property,omitempty"`
+	// 是否禁用
+	Disable bool `protobuf:"varint,4,opt,name=disable,proto3" json:"disable,omitempty"`
 }
 
 func (x *Handle) Reset() {

@@ -19,29 +19,40 @@ extend google.protobuf.ServiceOptions {
 }
 
 message Tag {
+  // 标签名
   string name = 1;
-
+  // 附加的标签
   repeated string additional = 2;
 }
 
 message Selector {
+  // 使用的中间件定义路径
   string use = 1;
+  // 定义如何选择这些方法
   repeated Verb verbs = 2;
 }
 
 message Verb {
+  // 引用的handle id
   string id = 1;
+  // 选择器
   string select = 2;
 }
 
 message Defined {
+  // 中间件名称
   string name = 1;
+  // 中间件中定义的所有handle
   repeated Handle handlers = 2;
 }
 
 message Handle {
+  // id，不能重复
   string id = 1;
+  // 别名
   string alias = 2;
+  // 优先级
   int32 property = 3;
+  // 是否禁用
   bool disable = 4;
 }
