@@ -2,6 +2,7 @@ import (
 	context "context"
 	middleware "github.com/go-kratos/kratos/v2/middleware"
 	selector "github.com/go-kratos/kratos/v2/middleware/selector"
+	pkg "gitee.com/pengdacn/protoc-gen-go-kratos-selector/pkg"
 )
 
 {{ $desc := . }}
@@ -72,10 +73,15 @@ func (s *standardSelector{{- title $desc.Name -}}) Add_{{- $handle.Name -}}(mlds
 func (s *standardSelector{{- title $desc.Name -}}) match_{{- $handle.Name -}}() selector.MatchFunc {
     return func(ctx context.Context, operation string) bool {
 	    _, ok := Selector_{{- title $handle.Name -}}[operation]
+		if ok {
+			return ok
+		} else {
+			op := pkg.CombineOperation(operation)
+			_, ok = Selector_{{- title $handle.Name -}}[op]
 
-		return ok
+			return ok
+		}
     }
 }
 
 {{- end}}
-
