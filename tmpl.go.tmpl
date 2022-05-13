@@ -16,7 +16,7 @@ type standardSelector{{- title .Name }} struct {
 type Selector{{- title .Name }} interface {
 	Build() middleware.Middleware
 {{- range $_, $handle := .Handlers}}
-	Add_{{- $handle.Name}}(mld middleware.Middleware)
+	Add_{{- $handle.Name}}(mlds ...middleware.Middleware)
 {{- end}}
 }
 
@@ -63,8 +63,10 @@ func (s *standardSelector{{- title .Name -}}) Build() middleware.Middleware {
 }
 
 {{- range $_, $handle := .Handlers}}
-func (s *standardSelector{{- title $desc.Name -}}) Add_{{- $handle.Name -}}(mld middleware.Middleware) {
-	s.middlewares_{{- $handle.Name}} = append(s.middlewares_{{- $handle.Name}}, mld)
+func (s *standardSelector{{- title $desc.Name -}}) Add_{{- $handle.Name -}}(mlds ...middleware.Middleware) {
+	if len(mlds) != 0 {
+		s.middlewares_{{- $handle.Name}} = append(s.middlewares_{{- $handle.Name}}, mlds...)
+	}
 }
 
 func (s *standardSelector{{- title $desc.Name -}}) match_{{- $handle.Name -}}() selector.MatchFunc {
