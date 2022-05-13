@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package selector;
+
+import "google/protobuf/descriptor.proto";
+
+option go_package = "gitee.com/pengdacn/protoc-gen-go-kratos-selector/selector;selector";
+
+extend google.protobuf.MethodOptions {
+  Tag tag = 1101;
+}
+
+extend google.protobuf.FileOptions {
+  Defined defined = 1101;
+}
+
+extend google.protobuf.ServiceOptions {
+  Selector select = 1102;
+}
+
+message Tag {
+  string name = 1;
+
+  repeated string additional = 2;
+}
+
+message Selector {
+  string use = 1;
+  repeated Verb verbs = 2;
+}
+
+message Verb {
+  string id = 1;
+  string select = 2;
+}
+
+message Defined {
+  string name = 1;
+  repeated Handle handlers = 2;
+}
+
+message Handle {
+  string id = 1;
+  string alias = 2;
+  int32 property = 3;
+  bool disable = 4;
+}

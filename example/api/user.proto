@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package api.user.v1;
+option go_package = "api/user/v1;v1";
+
+import "selector/selector.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+service User {
+  option (selector.select) = {
+    // 代表使用的定义handler的proto文件位置，必填
+    use: "example/api/middleware.proto"
+    verbs: [
+      {
+        // verbs中的id必须是在use的proto中定义的，若没有定义，生成则会报错
+        id: "jwt"
+        // 通过select语法和在方法中定义的tag去选择在这个service中匹配的方法
+        select: "!no-jwt"
+      },
+      {
+        id: "privilege"
+        select: "!no-privilege"
+      }
+    ]
+  };
+
+  rpc Add(google.protobuf.Empty) returns(google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/user"
+      body: "*"
+    };
+  }
+
+  rpc Update(google.protobuf.Empty) returns(google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/api/v1/user/{id}"
+      body: "*"
+    };
+  }
+
+  rpc Remove(google.protobuf.Empty) returns(google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/user/{id}"
+    };
+  }
+
+  rpc List(google.protobuf.Empty) returns(google.protobuf.Empty) {
+    option (google.api.http) = {
+      get: "/api/v1/users"
+    };
+  }
+
+  rpc Login(google.protobuf.Empty) returns(google.protobuf.Empty) {
+    option (google.api.http) = {
+      get: "/api/v1/users"
+    };
+
+    option (selector.tag) = {
+      name: "no-jwt"
+      additional: [
+        "no-privilege"
+      ]
+    };
+  }
+
+  rpc GetSelf(google.protobuf.Empty) returns(google.protobuf.Empty) {
+    option (google.api.http) = {
+      get: "/api/v1/user/self"
+    };
+
+    option (selector.tag) = {
+      name: "no-privilege"
+    };
+  }
+}

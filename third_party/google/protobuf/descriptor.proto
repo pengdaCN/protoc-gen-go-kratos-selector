@@ -378,7 +378,7 @@ message FileOptions {
   // Generated classes can be optimized for speed or code size.
   enum OptimizeMode {
     SPEED = 1;         // Generate complete code for parsing, serialization,
-    // etc.
+                       // etc.
     CODE_SIZE = 2;     // Use ReflectionOps to implement these methods.
     LITE_RUNTIME = 3;  // Generate code using MessageLite and the lite runtime.
   }
@@ -710,7 +710,7 @@ message MethodOptions {
     IDEMPOTENT = 2;       // idempotent, but may have side effects
   }
   optional IdempotencyLevel idempotency_level = 34
-  [default = IDEMPOTENCY_UNKNOWN];
+      [default = IDEMPOTENCY_UNKNOWN];
 
   // The parser stores options it doesn't recognize here. See above.
   repeated UninterpretedOption uninterpreted_option = 999;
@@ -803,7 +803,7 @@ message SourceCodeInfo {
     // location.
     //
     // Each element is a field number or an index.  They form a path from
-    // the root FileDescriptorProto to the place where the definition occurs.  For
+    // the root FileDescriptorProto to the place where the definition.  For
     // example, this path:
     //   [ 4, 3, 2, 7, 1 ]
     // refers to:

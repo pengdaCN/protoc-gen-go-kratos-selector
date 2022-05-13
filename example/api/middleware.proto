@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package api.middleware.v1;
+option go_package = "api/middleware/v1;v1";
+
+import "selector/selector.proto";
+
+option (selector.defined) = {
+  name: "middleware"
+  handlers: [
+    {
+      // 定义这个handle的名称，必须是唯一的，且符合golang变量命名规范
+      id: "jwt"
+      // 指定优先级，1优先级最高，2其次，以此类推，若优先级别相同，则按照字符串的比较规则，比较id
+      // property不能小于0
+      property: 1
+    },
+    {
+      id: "privilege"
+      property: 2
+    }
+  ]
+};

@@ -82,6 +82,10 @@ find:
 	for name, _ := range useHandle {
 		for _, handle := range extension.Handlers {
 			if handle.Id == name {
+				if handle.Property < 0 {
+					return fmt.Errorf("%s:%s property than less zero", file.Desc.Path(), handle.Id)
+				}
+
 				continue find
 			}
 		}
@@ -119,19 +123,10 @@ type DrawingData struct {
 		Name           string
 		FullMethodName []string
 	}
-	//Middleware protogen.GoImportPath
-	//Selector   protogen.GoImportPath
 }
-
-const (
-//kratosMiddleware = protogen.GoImportPath(`github.com/go-kratos/kratos/v2/middleware`)
-//kratosSelector   = protogen.GoImportPath(`github.com/go-kratos/kratos/v2/middleware/selector`)
-)
 
 func generateDrawingData(def *selector.Defined, srvs []*serviceDesc) (r DrawingData) {
 	r.Name = def.Name
-	//r.Middleware = kratosMiddleware
-	//r.Selector = kratosSelector
 
 	sort.Slice(def.Handlers, func(i, j int) bool {
 		pre := def.Handlers[i]
