@@ -3,6 +3,7 @@ import (
 	middleware "github.com/go-kratos/kratos/v2/middleware"
 	selector "github.com/go-kratos/kratos/v2/middleware/selector"
 	pkg "gitee.com/pengdacn/protoc-gen-go-kratos-selector/pkg"
+	transport "github.com/go-kratos/kratos/v2/transport"
 )
 
 {{ $desc := . }}
@@ -76,8 +77,13 @@ func (s *standardSelector{{- title $desc.Name -}}) match_{{- $handle.Name -}}() 
 		if ok {
 			return ok
 		} else {
-			op := pkg.CombineOperation(operation)
-			_, ok = Selector_{{- title $handle.Name -}}[op]
+			tr, _ok := transport.FromServerContext(ctx)
+			if _ok {
+				if tr.Kind() == transport.KindHTTP {
+					op := pkg.CombineOperation(operation)
+					_, ok = Selector_{{- title $handle.Name -}}[op]
+				}
+			}
 
 			return ok
 		}
