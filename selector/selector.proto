@@ -55,4 +55,8 @@ message Handle {
   int32 property = 3;
   // 是否禁用
   bool disable = 4;
+  // 预先定义的选择器，可以在Verb中被覆盖
+  string preSelect = 5;
+  // 是否自动导入，只有在preSelect不为空时才有意义
+  bool autoImport = 6;
 }
