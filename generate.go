@@ -79,7 +79,7 @@ func generateSelectorFile(gen *protogen.Plugin, file *protogen.File, srvs []*ser
 	}
 
 find:
-	for name, _ := range useHandle {
+	for name := range useHandle {
 		for _, handle := range extension.Handlers {
 			if handle.Id == name {
 				if handle.Property < 0 {
@@ -91,6 +91,13 @@ find:
 		}
 
 		return fmt.Errorf("selector id: %s not found", name)
+	}
+
+	// TODO 想办法合并操作
+	for _, handler := range extension.Handlers {
+		if handler.Property < 0 {
+			return fmt.Errorf("%s:%s property than less zero", file.Desc.Path(), handler.Id)
+		}
 	}
 
 	filename := file.GeneratedFilenamePrefix + suffix
@@ -142,11 +149,44 @@ func generateDrawingData(def *selector.Defined, srvs []*serviceDesc) (r DrawingD
 
 	t := make(map[string][]string)
 	for _, srv := range srvs {
-		for _, verb := range srv.selectInfo.Verbs {
-			var matches []string
+		var verb = srv.selectInfo.Verbs
+		{
+			// 添加自动导入verb
+			var autoImport []*selector.Verb
+			for _, handler := range def.Handlers {
+				if handler.AutoImport {
+					if !exitsHandleIdInServiceDesc(srv, handler.Id) {
+						autoImport = append(autoImport, &selector.Verb{
+							Id:     handler.Id,
+							Select: handler.PreSelect,
+						})
+					}
+				}
+			}
+
+			if len(autoImport) != 0 {
+				verb = append(verb, autoImport...)
+			}
+		}
+
+		for _, verb := range verb {
+			var (
+				matches []string
+				vSelect = verb.Select
+			)
+
+			if vSelect == "" {
+				h, ok := getHandle(def, verb.Id)
+				if ok {
+					// 按照现在的逻辑，这个ok永远等于true
+					if h.PreSelect != "" {
+						vSelect = h.PreSelect
+					}
+				}
+			}
 
 			for _, desc := range srv.funcs {
-				if fullMatch(verb.Select, desc.tags) {
+				if fullMatch(vSelect, desc.tags) {
 					matches = append(matches, path.Join("/", srv.protoFullName, desc.protoName))
 				}
 			}
@@ -191,4 +231,24 @@ func generateDrawingData(def *selector.Defined, srvs []*serviceDesc) (r DrawingD
 	}
 
 	return
+}
+
+func getHandle(exts *selector.Defined, id string) (*selector.Handle, bool) {
+	for _, handler := range exts.Handlers {
+		if handler.Id == id {
+			return handler, true
+		}
+	}
+
+	return nil, false
+}
+
+func exitsHandleIdInServiceDesc(srv *serviceDesc, id string) bool {
+	for _, verb := range srv.selectInfo.Verbs {
+		if verb.Id == id {
+			return true
+		}
+	}
+
+	return false
 }
