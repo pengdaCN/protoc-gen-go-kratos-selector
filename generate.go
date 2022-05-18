@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	suffix = "_selector.pb.go"
+	suffix      = "_selector.pb.go"
+	dftProperty = 10
 )
 
 func generateSelector(gen *protogen.Plugin) error {
@@ -81,6 +82,10 @@ func generateSelectorFile(gen *protogen.Plugin, file *protogen.File, srvs []*ser
 find:
 	for name := range useHandle {
 		for _, handle := range extension.Handlers {
+			if handle.Property == 0 {
+				handle.Property = dftProperty
+			}
+
 			if handle.Id == name {
 				if handle.Property < 0 {
 					return fmt.Errorf("%s:%s property than less zero", file.Desc.Path(), handle.Id)
