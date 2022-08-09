@@ -11,5 +11,5 @@ var tmplStr string
 var tmpl *template.Template
 
 func init() {
-	tmpl = template.Must(template.New("selector").Funcs(template.FuncMap(sprig.FuncMap())).Parse(tmplStr))
+	tmpl = template.Must(template.New("selector").Funcs(sprig.FuncMap()).Parse(tmplStr))
 }

@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"gitee.com/pengdacn/protoc-gen-go-kratos-selector/selector"
+	"github.com/pengdacn/protoc-gen-go-kratos-selector/selector"
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/proto"
 	"path"

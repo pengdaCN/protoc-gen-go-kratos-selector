@@ -2,6 +2,7 @@ package pkg
 
 import "strings"
 
+// CombineOperation Deprecated: kratos新版更新了http的生成方式
 func CombineOperation(op string) string {
 	idx := strings.LastIndex(op, "/")
 	if idx < 0 {

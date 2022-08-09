@@ -1,4 +1,4 @@
-module gitee.com/pengdacn/protoc-gen-go-kratos-selector
+module github.com/pengdacn/protoc-gen-go-kratos-selector
 
 go 1.17
 
